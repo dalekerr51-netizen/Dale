@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -197,6 +196,11 @@
       box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
+    option {
+      background-color: #0f172a;
+      color: var(--text-main);
+    }
+
     .btn-submit {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
       color: white;
@@ -290,7 +294,7 @@
   <div class="container">
     <div class="hero">
       <h1>Master Your Student Budget</h1>
-      <p>Track tuition, textbooks, food, and fun with dark-mode clarity.</p>
+      <p>Organize tuition, food, living costs, and supplies in one place.</p>
     </div>
 
     <!-- Summary Metrics -->
@@ -300,12 +304,16 @@
         <div class="card-amount" id="totalSpent">$0.00</div>
       </div>
       <div class="card">
-        <div class="card-title"><i data-lucide="book-open"></i> Academics</div>
+        <div class="card-title"><i data-lucide="book-open"></i> Tuition & Books</div>
         <div class="card-amount" id="academicSpent">$0.00</div>
       </div>
       <div class="card">
-        <div class="card-title"><i data-lucide="coffee"></i> Lifestyle & Food</div>
-        <div class="card-amount" id="lifestyleSpent">$0.00</div>
+        <div class="card-title"><i data-lucide="utensils"></i> Food Expenses</div>
+        <div class="card-amount" id="foodSpent">$0.00</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i data-lucide="home"></i> Rent & Utilities</div>
+        <div class="card-amount" id="housingSpent">$0.00</div>
       </div>
     </div>
 
@@ -316,8 +324,8 @@
         <h3 style="margin-bottom: 1.2rem;">Add New Expense</h3>
         <form id="expenseForm">
           <div class="input-group">
-            <label for="title">Title / Item</label>
-            <input type="text" id="title" placeholder="e.g. Physics Textbook" required />
+            <label for="title">Title / Description</label>
+            <input type="text" id="title" placeholder="e.g. Physics Textbook, Trader Joe's" required />
           </div>
           <div class="input-group">
             <label for="amount">Amount ($)</label>
@@ -326,10 +334,13 @@
           <div class="input-group">
             <label for="category">Category</label>
             <select id="category">
-              <option value="Academics">Academics & Books</option>
-              <option value="Rent">Rent & Housing</option>
-              <option value="Food">Food & Dining</option>
-              <option value="Lifestyle">Entertainment & Lifestyle</option>
+              <option value="Tuition and Fees">Tuition and Fees</option>
+              <option value="Rent">Rent</option>
+              <option value="Books and Supplies">Books and Supplies</option>
+              <option value="Groceries">Groceries</option>
+              <option value="On Campus Food">On Campus Food</option>
+              <option value="Food Out">Food Out</option>
+              <option value="Utilities">Utilities</option>
             </select>
           </div>
           <button type="submit" class="btn-submit">
@@ -361,7 +372,8 @@
     const emptyState = document.getElementById('emptyState');
     const totalSpentEl = document.getElementById('totalSpent');
     const academicSpentEl = document.getElementById('academicSpent');
-    const lifestyleSpentEl = document.getElementById('lifestyleSpent');
+    const foodSpentEl = document.getElementById('foodSpent');
+    const housingSpentEl = document.getElementById('housingSpent');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -387,12 +399,22 @@
       list.innerHTML = '';
       let total = 0;
       let academic = 0;
-      let lifestyle = 0;
+      let food = 0;
+      let housing = 0;
 
       expenses.forEach(item => {
         total += item.amount;
-        if (item.category === 'Academics') academic += item.amount;
-        if (item.category === 'Food' || item.category === 'Lifestyle') lifestyle += item.amount;
+        
+        // Sum category groups for cards
+        if (item.category === 'Tuition and Fees' || item.category === 'Books and Supplies') {
+          academic += item.amount;
+        }
+        if (item.category === 'Groceries' || item.category === 'On Campus Food' || item.category === 'Food Out') {
+          food += item.amount;
+        }
+        if (item.category === 'Rent' || item.category === 'Utilities') {
+          housing += item.amount;
+        }
 
         const el = document.createElement('div');
         el.className = 'expense-item';
@@ -410,7 +432,8 @@
       // Update Summary Cards
       totalSpentEl.textContent = `$${total.toFixed(2)}`;
       academicSpentEl.textContent = `$${academic.toFixed(2)}`;
-      lifestyleSpentEl.textContent = `$${lifestyle.toFixed(2)}`;
+      foodSpentEl.textContent = `$${food.toFixed(2)}`;
+      housingSpentEl.textContent = `$${housing.toFixed(2)}`;
     }
   </script>
 </body>
